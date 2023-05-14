@@ -17,12 +17,12 @@ while True:
                 konto += kwota
                 zadanie = f"Dokonano {operacja} na kwotę {kwota}"
                 historia.append(zadanie)
-                print(historia)
+
             elif operacja == 'p' and konto >= kwota:
                 konto -= kwota
                 zadanie = f"Dokonano {operacja} na kwotę {kwota}"
                 historia.append(zadanie)
-                print(historia)
+
             elif operacja == 'p' and konto < kwota:
                 print('Niemasz srodków na koncie')
             else:
@@ -118,7 +118,22 @@ while True:
             else:
                 print(f'Stan dla wybranego produktu: {wybrany_produkt} - {magazyn[wybrany_produkt]}')
         elif wybor == 'przeglad':
-            print('przeglad')
-
+            print('Wybrales przeglad histori wykonanych akcji.')
+            od = input('Podaj poczatek zakresu: ')
+            do = input('Podaj koniec zakresu: ')
+            liczba_akcji = len(historia)
+            if od:
+                od = int(od)
+            else:
+                od = 0
+            if do:
+                do = int(do)
+            else:
+                do = liczba_akcji
+            if od < 0 or od > liczba_akcji or do < 0 or do > liczba_akcji:
+                print(f'Podałeś zły zakres. Liczba wszytskich akcji wynosi: {liczba_akcji}')
+            else:
+                print(f'Twoj zakres to od {od} do {do}')
+                print(historia[od: do])
     else:
         print('Podales nieprawidlowa opcje!')

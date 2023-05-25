@@ -1,7 +1,26 @@
+import json
+nazwa_pliku = 'saldo.txt'
+plik = open(nazwa_pliku, 'a')
+nazwa_pliku_m = 'magazyn.txt'
+plik_m = open(nazwa_pliku_m, 'a')
+nazwa_pliku_p = 'przeglad.txt'
+plik_p = open(nazwa_pliku_p, 'a')
+
 menu = ('saldo', 'sprzedaz', 'zakup', 'konto', 'lista', 'magazyn', 'przeglad', 'koniec',)
-konto = 1000
+
+konto = 0
+with open(nazwa_pliku, 'r') as f:
+    for ele in f:
+        konto = float(ele)
 historia = []
+with open(nazwa_pliku_p, 'r') as f:
+    for ele in f:
+        x = ele[:-1]
+        historia.append(x)
 magazyn = {}
+with open(nazwa_pliku_m, 'r') as f:
+    for ele in f:
+        magazyn = json.loads(ele.replace("'", '"'))
 while True:
     print(f'Uzytkowniku masz dotepne nastepujace opcje : {menu}')
     wybor = str(input('Podaj wybraną opcje: \n'))
@@ -10,6 +29,7 @@ while True:
             print('Zakończyłeś działanie programu!')
             break
         elif wybor == 'saldo':
+
             print('Wybrales saldo')
             operacja = str.lower(input('Podaj rodzaj operacji w -wpłata, p - platość:  '))
             kwota = float(input('Podaj kwotę: '))
@@ -46,7 +66,7 @@ while True:
                     }}
                     magazyn[produkt_do_przedazy] = {'cena': cena_sprzedazy, 'ilosc': ilosc_produktu}
 
-                    zadanie = f"Sprzedano {sprzedaz_produktu}"
+                    zadanie = f"Sprzedano {produkt_do_przedazy}: ilośc: {ilosc_do_sprzedazy} cena: {cena_sprzedazy}"
                     historia.append(zadanie)
 
                 elif ilosc_produktu == ilosc_do_sprzedazy:
@@ -59,8 +79,9 @@ while True:
                     }}
                     del magazyn[produkt_do_przedazy]
 
-                    zadanie = f"Sprzedano {sprzedaz_produktu}"
+                    zadanie = f"Sprzedano {produkt_do_przedazy}: ilośc: {ilosc_do_sprzedazy} cena: {cena_sprzedazy}"
                     historia.append(zadanie)
+
                 else:
                     print(f'Na stanie magazynu nie ma wystarczającej ilości produktu.\n'
                           f' W magazynie jest {ilosc_produktu}')
@@ -70,6 +91,7 @@ while True:
             produkt = str(input('Podaj nazwę produktu: '))
             cena_zakupu = float(input('Podaj cenę produktu: '))
             ilosc = float(input('Podaj ilosc produktów: '))
+            zakupiona_ilosc = ilosc
             if cena_zakupu <= 0:
                 print('Podano niewłaściwą cenę zakupu!')
             elif cena_zakupu * ilosc <= konto:
@@ -82,7 +104,7 @@ while True:
                     ilosc += ilosc
                     magazyn[produkt] = {'cena': cena_zakupu, 'ilosc': ilosc}
 
-                    zadanie = f"zakupiono {zakup_produktu}"
+                    zadanie = f"zakupiono {produkt}: cena: {cena_zakupu} ilość: {zakupiona_ilosc}"
                     historia.append(zadanie)
 
                 else:
@@ -93,7 +115,8 @@ while True:
                     magazyn[produkt] = {'cena': cena_zakupu, 'ilosc': ilosc}
                     konto -= cena_zakupu * ilosc
 
-                    zadanie = f"zakupiono {zakup_produktu} "
+                    zadanie = f"zakupiono {produkt}: cena: {cena_zakupu} ilość: {zakupiona_ilosc} "
+
                     historia.append(zadanie)
 
             else:
@@ -118,6 +141,7 @@ while True:
             else:
                 print(f'Stan dla wybranego produktu: {wybrany_produkt} - {magazyn[wybrany_produkt]}')
         elif wybor == 'przeglad':
+
             print('Wybrales przeglad histori wykonanych akcji.')
             od = input('Podaj poczatek zakresu: ')
             do = input('Podaj koniec zakresu: ')
@@ -137,3 +161,11 @@ while True:
                 print(historia[od: do])
     else:
         print('Podales nieprawidlowa opcje!')
+
+with open(nazwa_pliku, 'w') as f:
+    f.write(str(konto))
+with open(nazwa_pliku_m, 'w') as f:
+    f.write(str(magazyn))
+with open(nazwa_pliku_p, 'w') as f:
+    for ele in historia:
+        f.write(ele + '\n')
